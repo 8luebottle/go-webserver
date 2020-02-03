@@ -9,7 +9,7 @@ import (
 
 func main() {
 	e := echo.New()
-	fmt.Println("This is a Good Start", e)
+	fmt.Println("It's a good beginning for me.", e)
 
 	e.GET("/",func (c echo.Context) error{
 		return c.String(http.StatusOK, "SUCCESS!")
