@@ -14,6 +14,11 @@ type Cat struct{
 	Type string `json:"type"`
 }
 
+type Dog struct {
+	Name string `json:"name"`
+	Type string `json:"type"`
+}
+
 func begin(c echo.Context) error {
 	return c.String(http.StatusOK, "SUCCESS!")
 }
@@ -39,7 +44,7 @@ func getCats(c echo.Context) error {
 	}) // Neither of those condition's match than return this
 }
 
-func addCats(c echo.Context) error{
+func addCat(c echo.Context) error{
 	cat := Cat{}
 
 	defer c.Request().Body.Close()
@@ -59,15 +64,31 @@ func addCats(c echo.Context) error{
 	return c.String(http.StatusOK, "We got your cat!")
 }
 
+func addDog(c echo.Context) error {
+	dog := Dog{}
+
+	defer c.Request().Body.Close()
+
+	err := json.NewDecoder(c.Request().Body).Decode(&dog)
+	if err != nil{
+		log.Printf("Failed processing addDog request: %s", err)
+		return echo.NewHTTPError(http.StatusInternalServerError, "")
+	}
+
+	log.Printf("This is your dog: %#v", dog)
+	return c.String(http.StatusOK, "We got your dog!")
+}
+
 func main() {
 	fmt.Println("It's a good beginning for me.")
 
 	e := echo.New() // create an instance of Echo
 
 	e.GET("/", begin) 		 // Endpoint1
-	e.GET("/cats/:data", getCats) // Endpoint2
+	e.GET("/cats/:id", getCats) // Endpoint2
 
-	e.POST("/cats", addCats)
+	e.POST("/cats", addCat)
+	e.POST("/dogs", addDog)
 
 	// Routes
 	e.Start(":8000") // Start Server
