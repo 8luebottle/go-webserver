@@ -19,6 +19,11 @@ type Dog struct {
 	Type string `json:"type"`
 }
 
+type Tiger struct {
+	Name string `json:"name"`
+	Type string `json:"Type"`
+}
+
 func begin(c echo.Context) error {
 	return c.String(http.StatusOK, "SUCCESS!")
 }
@@ -79,6 +84,19 @@ func addDog(c echo.Context) error {
 	return c.String(http.StatusOK, "We got your dog!")
 }
 
+func addTiger(c echo.Context) error {
+	tiger := Tiger{}
+
+	err := c.Bind(&tiger)  // Bind 3rd Party Methods
+	if err != nil {
+		log.Printf("Failed processing addTiger request: %s", err)
+		return echo.NewHTTPError(http.StatusInternalServerError)
+	}
+
+	log.Printf("This is your tiger: %#v", tiger)
+	return c.String(http.StatusOK, "We got your Tiger! Here! Take it.")
+}
+
 func main() {
 	fmt.Println("It's a good beginning for me.")
 
@@ -89,6 +107,7 @@ func main() {
 
 	e.POST("/cats", addCat)
 	e.POST("/dogs", addDog)
+	e.POST("/tigers", addTiger)
 
 	// Routes
 	e.Start(":8000") // Start Server
